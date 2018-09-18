@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/MyVideoPlayer">
+        <file>data/qss/ToolFrame.qss</file>
+        <file>data/qss/SearchButton.qss</file>
+        <file>Encrypt.js</file>
+    </qresource>
+</RCC>
