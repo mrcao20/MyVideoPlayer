@@ -15,10 +15,13 @@ public:
 
 	void initApi(const QUrl &url) override;
 	QStringList getVideoInfoList() override;
+	QStringList getVideoNames() override;
 	QString getVideo(const QString &id) override;
 
 private:
-	void getVideoId(const QUrl &url);
+	void getVideoInfo(const QUrl &url);
+	void getVideoIds(const QString &data);
+	void getVideoNames(const QString &data);
 	void getRefererSuffix(const QUrl &url);
 	QString getVusession(const QString &id);
 	QString getCKey(const QString &id);

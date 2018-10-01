@@ -9,6 +9,8 @@ Slider::Slider(QWidget *parent)
 	: QSlider(parent) 
 	, d(new SliderData)
 {
+	setMouseTracking(true);
+	d->m_isPress = false;
 }
 
 int Slider::getCursorCurrentPos() {
@@ -18,8 +20,9 @@ int Slider::getCursorCurrentPos() {
 }
 
 void Slider::mouseMoveEvent(QMouseEvent *event) {
+	int pos = getCursorCurrentPos();
+	emit showCurrPos(pos);
 	if (d->m_isPress) {
-		int pos = getCursorCurrentPos();
 		setValue(pos);
 		return;
 	}
@@ -42,4 +45,9 @@ void Slider::mouseReleaseEvent(QMouseEvent *event) {
 		return;
 	}
 	QSlider::mouseReleaseEvent(event);
+}
+
+void Slider::leaveEvent(QEvent *event) {
+	emit cursorLeave();
+	QSlider::leaveEvent(event);
 }

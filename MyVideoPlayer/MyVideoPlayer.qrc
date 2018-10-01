@@ -3,5 +3,7 @@
         <file>data/qss/ToolFrame.qss</file>
         <file>data/qss/SearchButton.qss</file>
         <file>Encrypt.js</file>
+        <file>data/images/Slider_bar.png</file>
+        <file>data/images/Slider_handle.png</file>
     </qresource>
 </RCC>

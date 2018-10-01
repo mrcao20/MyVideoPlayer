@@ -13,6 +13,7 @@ TabWidget::TabWidget(QWidget *parent)
 	, d(new TabWidgetData)
 {
 	connect(tabBar(), &QTabBar::tabCloseRequested, this, &TabWidget::closeTab);
+	connect(this, &QTabWidget::currentChanged, this, &TabWidget::handleCurrentChanged);
 }
 
 void TabWidget::setUrl(const QUrl &url) {
@@ -34,6 +35,13 @@ void TabWidget::clear() {
 
 void TabWidget::setupView(WebView *webView){
 	QWebEnginePage *webPage = webView->page();
+	connect(webView, &QWebEngineView::urlChanged, [this, webView](const QUrl &url) {
+		int index = indexOf(webView);
+		if (index != -1)
+			tabBar()->setTabData(index, url);
+		if (currentIndex() == index)
+			emit urlChanged(url);
+	});
 	connect(webView, &QWebEngineView::titleChanged, [this, webView](const QString &title) {
 		int index = indexOf(webView);
 		if (index != -1) {
@@ -87,6 +95,18 @@ void TabWidget::closeTab(int index){
 			webView->setUrl(d->m_mainUrl);
 		}
 		view->deleteLater();
+	}
+}
+
+void TabWidget::handleCurrentChanged(int index){
+	if (index != -1) {
+		WebView *view = webView(index);
+		if (!view->url().isEmpty())
+			view->setFocus();
+		emit urlChanged(view->url());
+	}
+	else {
+		emit urlChanged(QUrl());
 	}
 }
 

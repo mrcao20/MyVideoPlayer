@@ -91,6 +91,10 @@ void NetworkTools::getValue(QJsonObject &root, QJsonValue &nodeValue, QStringLis
 }
 
 QByteArray NetworkTools::getNetworkData(const QString &url, const QMap<QByteArray, QByteArray> &headers) {
+	return getNetworkData(QUrl(url), headers);
+}
+
+QByteArray NetworkTools::getNetworkData(const QUrl &url, const QMap<QByteArray, QByteArray> &headers) {
 	QNetworkRequest request;
 	request.setUrl(url);
 	for (auto itr = headers.cbegin(); itr != headers.cend(); itr++) {
@@ -102,6 +106,10 @@ QByteArray NetworkTools::getNetworkData(const QString &url, const QMap<QByteArra
 }
 
 QByteArray NetworkTools::getNetworkData(const QString &url, const QByteArray &postData, const QMap<QByteArray, QByteArray> &headers) {
+	return getNetworkData(QUrl(url), postData, headers);
+}
+
+QByteArray NetworkTools::getNetworkData(const QUrl &url, const QByteArray &postData, const QMap<QByteArray, QByteArray> &headers) {
 	QNetworkRequest request;
 	request.setUrl(url);
 	for (auto itr = headers.cbegin(); itr != headers.cend(); itr++) {

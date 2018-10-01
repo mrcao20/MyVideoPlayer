@@ -24,12 +24,14 @@ public:
 	void clear();
 
 signals:
+	void urlChanged(const QUrl &url);
 	void playVideo(const QUrl &url);
 
 public slots:
 	WebView *createTab();
 	WebView *createBackgroundTab();
 	void closeTab(int index);
+	void handleCurrentChanged(int index);
 
 private:
 	WebView *currentWebView() const;

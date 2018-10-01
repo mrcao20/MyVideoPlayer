@@ -12,7 +12,7 @@ public:
 	explicit MyVideoPlayer(QWidget *parent = Q_NULLPTR);
 	~MyVideoPlayer();
 
-	void playFile(QString &fileName);
+	void playFile(const QString &fileName);
 
 protected:
 	void closeEvent(QCloseEvent *event) override;
@@ -20,7 +20,6 @@ protected:
 private slots:
 	void search(const QString &name);
 	void playNetworkVideo(const QUrl &url);
-	void getVideoLink(const QString &id);
 
 private:
 	void init();

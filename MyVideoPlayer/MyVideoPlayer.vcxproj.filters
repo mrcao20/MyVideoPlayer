@@ -90,14 +90,17 @@
     <ClCompile Include="PlayerWidget.cpp">
       <Filter>Source Files\PlayerWidget</Filter>
     </ClCompile>
-    <ClCompile Include="ToolFrame.cpp">
-      <Filter>Source Files\PlayerWidget</Filter>
-    </ClCompile>
     <ClCompile Include="VideoWidget.cpp">
       <Filter>Source Files\PlayerWidget</Filter>
     </ClCompile>
     <ClCompile Include="Slider.cpp">
       <Filter>Source Files\PlayerWidget</Filter>
+    </ClCompile>
+    <ClCompile Include="TcpClient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Global.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -125,14 +128,17 @@
     <QtMoc Include="PlayerWidget.h">
       <Filter>Header Files\PlayerWidget</Filter>
     </QtMoc>
-    <QtMoc Include="ToolFrame.h">
-      <Filter>Header Files\PlayerWidget</Filter>
-    </QtMoc>
     <QtMoc Include="VideoWidget.h">
       <Filter>Header Files\PlayerWidget</Filter>
     </QtMoc>
     <QtMoc Include="Slider.h">
       <Filter>Header Files\PlayerWidget</Filter>
+    </QtMoc>
+    <QtMoc Include="Global.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="TcpClient.h">
+      <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>

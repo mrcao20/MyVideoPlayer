@@ -12,10 +12,15 @@ public:
 	explicit Slider(QWidget *parent = 0);
 	virtual ~Slider() = default;
 
+signals:
+	void showCurrPos(int pos);
+	void cursorLeave();
+
 protected:
 	void mouseMoveEvent(QMouseEvent *event) override;
 	void mousePressEvent(QMouseEvent *event) override;
 	void mouseReleaseEvent(QMouseEvent *event) override;
+	void leaveEvent(QEvent *event) override;
 
 private:
 	int getCursorCurrentPos();

@@ -18,7 +18,9 @@ public:
 	~NetworkTools();
 
 	QByteArray getNetworkData(const QString &, const QMap<QByteArray, QByteArray> & = QMap<QByteArray, QByteArray>());
+	QByteArray getNetworkData(const QUrl &, const QMap<QByteArray, QByteArray> & = QMap<QByteArray, QByteArray>());
 	QByteArray getNetworkData(const QString &, const QByteArray &postData, const QMap<QByteArray, QByteArray> & = QMap<QByteArray, QByteArray>());
+	QByteArray getNetworkData(const QUrl &, const QByteArray &postData, const QMap<QByteArray, QByteArray> & = QMap<QByteArray, QByteArray>());
 	QJsonValue getJsonValue(const QByteArray &json, const QString &nodeName);
 	QJsonValue getJsonValue(const QByteArray &json, const QString &nodeName, int subscript);
 	QJsonValue getJsonValue(const QJsonObject &root, const QString &nodeName);

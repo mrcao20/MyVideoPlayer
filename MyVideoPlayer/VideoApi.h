@@ -9,6 +9,7 @@ public:
 
 	virtual void initApi(const QUrl &url) = 0;
 	virtual QStringList getVideoInfoList() = 0;
+	virtual QStringList getVideoNames() = 0;
 	virtual QString getVideo(const QString &id) = 0;
 
 };

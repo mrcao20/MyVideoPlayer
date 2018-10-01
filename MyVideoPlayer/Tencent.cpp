@@ -14,6 +14,7 @@
 struct TencentData{
 	NetworkTools m_networkTools;
 	QStringList m_videoIds;
+	QStringList m_videoNames;
 	QString m_refererSuffix;
 };
 
@@ -25,12 +26,16 @@ Tencent::Tencent(QObject *parent)
 }
 
 void Tencent::initApi(const QUrl &url) {
-	getVideoId(url);
+	getVideoInfo(url);
 	getRefererSuffix(url);
 }
 
 QStringList Tencent::getVideoInfoList() {
 	return d->m_videoIds;
+}
+
+QStringList Tencent::getVideoNames() {
+	return d->m_videoNames;
 }
 
 QString Tencent::getVideo(const QString &id) {
@@ -54,27 +59,46 @@ QString Tencent::getVideo(const QString &id) {
 	return videoLink;
 }
 
-void Tencent::getVideoId(const QUrl &url) {
+void Tencent::getVideoInfo(const QUrl &url) {
 	QMap<QByteArray, QByteArray> header;
 	header["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36";
 	QString data = d->m_networkTools.getNetworkData(url.toString(), header);
-	QRegularExpression re(R"(<div class="mod_episode" data-tpl="episode" _wind="columnname=选集">([\s\S]*?)</div>)");
+	QRegularExpression re(R"(<div class=".*? _wind="columnname=选集".*?>([\s\S]*?)</div>)");
 	QRegularExpressionMatch match = re.match(data);
-	QStringList a = match.capturedTexts();
+	QStringList a = match.capturedTexts();	// 得到匹配结果
 	if (a.size() < 2) {
 		return;
 	}
-	QString b = a.at(1);
-	re.setPattern(R"(id="(.+?)\")");
-	auto itr = re.globalMatch(b);
+	QString b = a.at(1);	// 得到视频集数的html文档
+	getVideoIds(b);
+	getVideoNames(b);
+}
+
+void Tencent::getVideoIds(const QString &data) {
+	QRegularExpression re(R"(id="(.+?)\")");
+	auto itr = re.globalMatch(data);
 	while (itr.hasNext()) {
-		match = itr.next();
-		a = match.capturedTexts();
+		auto match = itr.next();
+		auto a = match.capturedTexts();		// 得到匹配结果
 		if (a.size() < 2) {
 			continue;
 		}
-		b = a.at(1);
+		auto b = a.at(1);	// 得到视频id
 		d->m_videoIds.append(b);
+	}
+}
+
+void Tencent::getVideoNames(const QString &data) {
+	QRegularExpression re(R"(<a href=".*?">\s*(.*?)\s*</a>)");
+	auto itr = re.globalMatch(data);
+	while (itr.hasNext()) {
+		auto match = itr.next();
+		auto a = match.capturedTexts();		// 得到匹配结果
+		if (a.size() < 2) {
+			continue;
+		}
+		auto b = a.at(1);	// 得到视频id
+		d->m_videoNames.append(b);
 	}
 }
 
