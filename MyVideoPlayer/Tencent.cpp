@@ -51,11 +51,31 @@ QString Tencent::getVideo(const QString &id) {
 	QDateTime dt = QDateTime::currentDateTime();
 	QString encryptVer = QString("7.%1").arg(dt.date().dayOfWeek());
 	QByteArray pd;
-	pd.append(getParam(h, dt.toSecsSinceEpoch(), vusession, vusession, id, encryptVer, getCKey(id)).toLatin1());
-	QTextStream cout(stdout);
-	QByteArray b = d->m_networkTools.getNetworkData(GET_VIDEO, pd, header);
-	QByteArray c = d->m_networkTools.getJsonValue(b, "vinfo").toString().toLatin1();
-	videoLink = d->m_networkTools.getJsonValue(c, "vl.vi.ul.ui.url", 4).toString();
+	QString defn;
+	for (int i = 0; i < 5; i++) {
+		switch (i){
+		case 0:
+			defn = "fhd";
+			break;
+		case 1:
+			defn = "shd";
+			break;
+		case 2:
+			defn = "mp4";
+			break;
+		case 3:
+			defn = "hd";
+			break;
+		case 4:
+			defn = "sd";
+			break;
+		}
+		pd.clear();
+		pd.append(getParam(h, dt.toSecsSinceEpoch(), vusession, vusession, id, encryptVer, getCKey(id), defn).toLatin1());
+		videoLink = getVideoLink(pd, header);
+		if (videoLink.endsWith(".ts.m3u8?ver=4"))
+			break;
+	}
 	return videoLink;
 }
 
@@ -104,9 +124,15 @@ void Tencent::getVideoNames(const QString &data) {
 
 void Tencent::getRefererSuffix(const QUrl &url) {
 	QString a = url.toString();
-	int i = a.lastIndexOf(QRegularExpression(R"(/)"));
-	QString b = a.left(i);
-	d->m_refererSuffix = b + ".html?vid=%1";
+	QRegularExpression re(R"((https://v.qq.com/x/cover/.*?)[/\.])");
+	QRegularExpressionMatch match = re.match(a);
+	QStringList b = match.capturedTexts();	// 得到匹配结果
+	if (b.size() < 2) {
+		d->m_refererSuffix = "";
+		return;
+	}
+	QString c = b.at(1);	// 得到视频集数的html文档
+	d->m_refererSuffix = c + ".html?vid=%1";
 }
 
 QString Tencent::getVusession(const QString &id) {
@@ -153,8 +179,16 @@ QString Tencent::getCKey(const QString &id) {
 	return cKey;
 }
 
+QString Tencent::getVideoLink(const QByteArray postData, const QMap<QByteArray, QByteArray> header) {
+	QString videoLink;
+	QByteArray b = d->m_networkTools.getNetworkData(GET_VIDEO, postData, header);
+	QByteArray c = d->m_networkTools.getJsonValue(b, "vinfo").toString().toLatin1();
+	videoLink = d->m_networkTools.getJsonValue(c, "vl.vi.ul.ui.url", 4).toString();
+	return videoLink;
+}
+
 QString Tencent::getParam(const QString &ehost, qint64 tm, const QString &access_token, const QString &vusession, 
-	const QString &id, const QString &encryptVer, const QString &cKey) {
+	const QString &id, const QString &encryptVer, const QString &cKey, const QString &defn) {
 
 	QString param;
 	QString a = R"({"buid":"onlyvinfo","vinfoparam":"charge=1&defaultfmt=auto&otype=ojson&guid=e47e82b5db21a590b047248ff2a628b8&flowid=522ab07f4f5eba900d0f2fe93e653452_10201&platform=10201&sdtfrom=v1010&defnpayver=1&appVer=3.5.55&host=v.qq.com&ehost=)";
@@ -167,7 +201,7 @@ QString Tencent::getParam(const QString &ehost, qint64 tm, const QString &access
 	QString h = vusession;
 	QString i = R"(%22%2C%22main_login%22%3A%22wx%22%7D&unid=6f9b101a4ec811e89d19a0429186d00a&vid=)";
 	QString j = id;
-	QString k = R"(&defn=fhd&fhdswitch=0&show1080p=1&isHLS=1&dtype=3&sphls=2&spgzip=1&dlver=2&defsrc=2&encryptVer=)";
+	QString k = QString(R"(&defn=%1&fhdswitch=0&show1080p=1&isHLS=1&dtype=3&sphls=2&spgzip=1&dlver=2&defsrc=2&encryptVer=)").arg(defn);
 	QString l = encryptVer;
 	QString m = R"(&cKey=)";
 	QString n = cKey;

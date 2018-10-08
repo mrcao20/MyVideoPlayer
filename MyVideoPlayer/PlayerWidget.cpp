@@ -119,8 +119,9 @@ void PlayerWidget::init(QWidget *w) {
 		}
 		d->m_isCachedPlay = checked;
 		d->m_isGetVideoThreadQuit = !checked;
-		d->m_mediaCurrPos = d->m_mediaPlayer.position();
+		qint64 pos = d->m_mediaPlayer.position();
 		play(d->m_currUrl.toString());
+		d->m_mediaCurrPos = pos;
 	});
 }
 
@@ -313,6 +314,7 @@ QString PlayerWidget::posToStrTime(const qint64 &pos) {
 }
 
 void PlayerWidget::play(const QString &path) {
+	d->m_mediaCurrPos = 0;
 	bool isNet = false;
 	QUrl url;
 	if (path.startsWith("http")) {
